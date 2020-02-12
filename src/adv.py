@@ -34,6 +34,43 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+#Add room items
+room['foyer'].items = [ 'Torch Light', 'Sword', 'Candle', 'Gun']
+room['narrow'].items = [ 'Shovel', '10 Coins']
+
+
+def change_room(direction):
+    success = False
+    if direction == 'n':
+        if (player.room.n_to != None):
+            player.room = player.room.n_to
+            success = True
+    elif direction == 's':
+        if (player.room.s_to != None):
+            player.room = player.room.s_to
+            success = True
+    elif direction == 'e':
+        if (player.room.e_to != None):
+            player.room = player.room.e_to
+            success = True
+    elif direction == 'w':
+        if (player.room.w_to != None):
+            player.room = player.room.w_to
+            success = True
+    return success
+
+
+def show_items():
+    room_items = player.room.items
+    if room_items:
+        print('The available items are :\n')
+        for item in room_items:
+            print(item)
+        item_action  = input('Pick any item ?')
+        if item_action in room_items:
+            
+
 #
 # Main
 #
@@ -42,6 +79,8 @@ player_name = input('Adventurer, what is your name ?')
 # Make a new player object that is currently in the 'outside' room.
 player = Player(player_name,room['outside'])
 
+WRONG_DIRECTION = "You cannot move in that direction.."
+DIRECTIONS = ['n' , 's' , 'e' , 'w']
 # Write a loop that:
 #
 while True:
@@ -49,28 +88,13 @@ while True:
     next_action = input('Where to '+player_name + '? n , s , e , w or q (Quit) ')
     if next_action == 'q':
         break
-    elif next_action == 'n':
-        if (player.room.n_to != None):
-            player.room = player.room.n_to
+    elif next_action in DIRECTIONS:
+        if (change_room(next_action)):
+            show_items()
         else:
-            print('Direction not allowed !!!')
-    elif next_action == 's':
-        if (player.room.s_to != None):
-            player.room = player.room.s_to
-        else:
-            print('Direction not allowed !!!')
-    elif next_action == 'e':
-        if (player.room.e_to != None):
-            player.room = player.room.e_to
-        else:
-            print('Direction not allowed !!!')
-    elif next_action == 'w':
-        if (player.room.w_to != None):
-            player.room = player.room.w_to
-        else:
-            print('Direction not allowed !!!')
-    else:
-        print('Please give valid input')
+            print('Please give valid input')
+
+    
 
 # * Prints the current room name
 # * Prints the current description (the textwrap module might be useful here).
