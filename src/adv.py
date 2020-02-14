@@ -61,15 +61,18 @@ def change_room(direction):
     return success
 
 
-def show_items():
+def pick_items():
     room_items = player.room.items
     if room_items:
         print('The available items are :\n')
         for item in room_items:
             print(item)
-        item_action  = input('Pick any item ?')
-        if item_action in room_items:
-            
+        item_picked  = input('Pick any item ?')
+        if item_picked in room_items:
+            player.items.append(item_picked)
+            player.room.items.remove(item_picked)
+    return
+
 
 #
 # Main
@@ -85,14 +88,24 @@ DIRECTIONS = ['n' , 's' , 'e' , 'w']
 #
 while True:
     print(player.room)
-    next_action = input('Where to '+player_name + '? n , s , e , w or q (Quit) ')
+    next_action = input('Where to '+player_name + '? n , s , e , w , i(Inventory) or q (Quit) ')
     if next_action == 'q':
         break
     elif next_action in DIRECTIONS:
-        if (change_room(next_action)):
-            show_items()
+        new_room = getattr(player.room,f'{next_action}_to')
+        if (new_room):
+            player.room = new_room
+            print(f'You are in {new_room.name}\n')
+            pick_items()
         else:
-            print('Please give valid input')
+            print(WRONG_DIRECTION)
+    elif next_action == 'i':
+        print('you have the following items:')
+        for item in player.items:
+            print(item)
+
+    else:
+        print('Please give valid input')
 
     
 
